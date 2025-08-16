@@ -9,8 +9,8 @@ class PostController extends Controller
 {
     public function index()
     {
-        return Post::orderBy("created_at", "desc")->get();
-    }
+$posts=Post::all();
+ return response()->json($posts, 200);       }
 
     public function store(Request $request)
     {
@@ -19,7 +19,8 @@ class PostController extends Controller
             "content" => $request->content,
             "user_id" => $request->user_id,
         ]);
-    }
+   
+}
 
     public function update(Request $request, $id)
     {
@@ -28,5 +29,10 @@ class PostController extends Controller
             "content" => $request->content,
             "user_id" => $request->user_id,
         ]);
-    }
+}
+         public function destroy($id){
+        $posts=Post::findorfail($id);
+         $posts->delete();
+ return response()->json(null, 204);   
+ }
 }
