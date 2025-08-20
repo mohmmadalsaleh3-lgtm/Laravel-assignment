@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
-
+use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 class CategoryController extends Controller
 {
     public function index()
@@ -12,21 +13,20 @@ class CategoryController extends Controller
         return Category::all();
     }
 
-    public function store(Request $request)
-    {
-        return Category::create([
-            "name" => $request->name,
-            "description" => $request->description,
-        ]);
-    }
+   public function store(StoreCategoryRequest $request)
+{
+    return Category::create($request->validated());
+}
 
-    public function update(Request $request, $id)
-    {
-        return Category::where('id', $id)->update([
-            "name" => $request->name,
-            "description" => $request->description,
-        ]);
-    }
+
+
+   public function update(UpdateCategoryRequest $request, $id)
+{
+    $category = Category::findOrFail($id);
+    $category->update($request->validated());
+    return response()->json($category, 200);
+}
+
     
     public function destroy($id)
     {

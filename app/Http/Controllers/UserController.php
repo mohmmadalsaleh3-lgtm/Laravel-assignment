@@ -3,32 +3,28 @@
 namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
-
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 class UserController extends Controller
 {
     public function index(){
-        $users=User::all();
- return response()->json($users, 200);   
- }
-    public function store(Request $request)
-    {
-        return User::create([
-           "name" => $request->name,
-            "email" => $request->email,
-             "password" => $request->password,
-             "avater_path"=>$request->avater_path,
-        ]);
-    }
+    $users = User::paginate(2); 
+    return response()->json($users, 200);
+}
 
-    public function update(Request $request, $id)
-    {
-        return User::where('id', $id)->update([
-           "name" => $request->name,
-            "email" => $request->email,
-             "password" => $request->password,
-             "avater_path"=>$request->avater_path,
-        ]);
-    }
+    public function store(StoreUserRequest $request)
+{
+    return User::create($request->validated());
+}
+
+
+    public function update(UpdateUserRequest $request, $id)
+{
+    $user = User::findOrFail($id);
+    $user->update($request->validated());
+    return response()->json($user, 200);
+}
+
       public function destroy($id){
         $users=User::findorfail($id);
          $users->delete();
